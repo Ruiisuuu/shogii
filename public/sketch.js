@@ -1,7 +1,6 @@
 /* SHOGI SUMMER 2018 LOUIS MOLLICK */
 
 // written in Atom, p5js Framework cuz idk how HTML works
-let socket;
 let side = "black";
 let matrix=[1,0,0,1,0,0];
 let imgs = [];
