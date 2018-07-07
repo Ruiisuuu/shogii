@@ -1,26 +1,16 @@
-
-
-
-
 var express = require('express');
-// Create the app
 var app = express();
 
 // Set up the server
-//var server = app.listen(process.env.OPENSHIFT_NODEJS_PORT || 8080, listen);
+var http = require('http').Server(app);
+var io = require('socket.io').listen(http);
 
-var server = require('http').Server(app);
+var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var ip_address = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
-//var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
-
-app.use(express.static('public'));
-
-
-// WebSocket Portion
-// WebSockets work with the HTTP server
-var io = require('socket.io').listen(server);
-
-server.listen(process.env.OPENSHIFT_NODEJS_PORT, process.env.OPENSHIFT_NODEJS_IP);
+http.listen(port, ip_address, function(){
+  console.log( "Listening on " + ip_address + ", port " + port );
+});
 
 console.log('are we here yet');
 // Register a callback function to run when we have an individual connection
