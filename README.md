@@ -1,0 +1,2 @@
+# shogii
+Shogi gamu
