@@ -1,17 +1,29 @@
+// Express.js stuff
 var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-var io = require('socket.io').listen(http);
+var app = require('express')();
+var server = require('http').Server(app);
 
-app.get('/', function(req, res) {
-    res.sendfile('index.html');
+// Websockets with socket.io
+var io = require('socket.io')(server);
+
+console.log("Trying to start server with config:", config.serverip + ":" + config.serverport);
+
+// Both port and ip are needed for the OpenShift, otherwise it tries 
+// to bind server on IP 0.0.0.0 (or something) and fails
+server.listen(config.serverport, config.serverip, function() {
+  console.log("Server running @ http://" + config.serverip + ":" + config.serverport);
 });
 
-http.listen(server_port, server_ip_address);
+// Allow some files to be server over HTTP
+app.use(express.static('public'));
+
+// Serve GET on http://domain/
+app.get('/', function (req, res) {
+  res.sendFile('public/index.html');
+});
 
 console.log('are we here yet');
+
 // Register a callback function to run when we have an individual connection
 // This is run for each individual user that connects
 io.sockets.on('connection',
@@ -27,9 +39,6 @@ io.sockets.on('connection',
         console.log("new move");
         // Send it  to all other clients
         socket.broadcast.emit('move', data);
-
-        // This is a way to send to everyone including sender
-        // io.sockets.emit('message', "this goes to everyone");
       }
     );
 
@@ -39,9 +48,6 @@ io.sockets.on('connection',
         console.log("new resettt");
         // Send it  to all other clients
         socket.broadcast.emit('reset');
-
-        // This is a way to send to everyone including sender
-        // io.sockets.emit('message', "this goes to everyone");
       }
     );
 
@@ -51,9 +57,6 @@ io.sockets.on('connection',
         console.log("new game over duddee");
         // Send it  to all other clients
         socket.broadcast.emit('gameover',data);
-
-        // This is a way to send to everyone including sender
-        // io.sockets.emit('message', "this goes to everyone");
       }
     );
 
