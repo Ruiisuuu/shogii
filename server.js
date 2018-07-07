@@ -1,27 +1,26 @@
 
+
+
+
 var express = require('express');
 // Create the app
 var app = express();
 
 // Set up the server
-// process.env.PORT is related to deploying on heroku
-var server = app.listen(process.env.OPENSHIFT_NODEJS_PORT || 8080, listen);
+//var server = app.listen(process.env.OPENSHIFT_NODEJS_PORT || 8080, listen);
 
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
- 
-function listen() {
-  var host = server.address().address;
-  var port = server.address().port;
-  console.log('Example app listening at http://' + host + ':' + port);
-}
+var server = require('http').Server(app);
 
+//var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
 
 app.use(express.static('public'));
 
 
 // WebSocket Portion
 // WebSockets work with the HTTP server
-var io = require('socket.io')(server);
+var io = require('socket.io').listen(server);
+
+server.listen(process.env.OPENSHIFT_NODEJS_PORT, process.env.OPENSHIFT_NODEJS_IP);
 
 console.log('are we here yet');
 // Register a callback function to run when we have an individual connection
