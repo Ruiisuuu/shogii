@@ -1,16 +1,15 @@
 var express = require('express');
 var app = express();
-
-// Set up the server
 var http = require('http').Server(app);
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var io = require('socket.io').listen(http);
 
-var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
-var ip_address = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
-
-http.listen(port, ip_address, function(){
-  console.log( "Listening on " + ip_address + ", port " + port );
+app.get('/', function(req, res) {
+    res.sendfile('index.html');
 });
+
+http.listen(server_port, server_ip_address);
 
 console.log('are we here yet');
 // Register a callback function to run when we have an individual connection
