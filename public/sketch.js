@@ -54,7 +54,7 @@ function setup() {
 	let sideButton = createButton("I sexually identify as a color");
 	sideButton.mousePressed(() => flipBoard());
 
-	socket = io.connect('http://shogi-shogiii.1d35.starter-us-east-1.openshiftapps.com ');
+	socket = io.connect();
   	// We make a named event called 'mouse' and write an
   	// anonymous callback function
   	socket.on('move',
