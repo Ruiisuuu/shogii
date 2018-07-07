@@ -55,7 +55,7 @@ function setup() {
 	sideButton.mousePressed(() => flipBoard());
 	
 	// https
-	var socket = io.connect('https://shogi2-shogiii.1d35.starter-us-east-1.openshiftapps.com:8443');
+	var socket = io.connect('https://shogi2-shogiii.1d35.starter-us-east-1.openshiftapps.com:8000');
 	
 	console.log("WORK DAMNIT");
   	// We make a named event called 'mouse' and write an
