@@ -53,7 +53,9 @@ function setup() {
 
 	let sideButton = createButton("I sexually identify as a color");
 	sideButton.mousePressed(() => flipBoard());
-
+	
+	console.log("WORK DAMNIT");
+	
 	socket = io.connect();
   	// We make a named event called 'mouse' and write an
   	// anonymous callback function
