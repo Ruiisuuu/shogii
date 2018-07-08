@@ -5,6 +5,7 @@ var io = require('socket.io')(http);
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
+app.use(express.static('public'));
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -18,7 +19,7 @@ http.listen(server_port, function(){
   console.log('listening on *:8080');
 });
 
-//app.use(express.static('public'));
+
 
 io.sockets.on('connection', function (socket) {
           console.log("We have a new client: " + socket.id);
