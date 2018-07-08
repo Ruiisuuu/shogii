@@ -7,6 +7,46 @@ let imgs = [];
 imgs["black"] = [];
 imgs["white"] = [];
 
+// // Use the Singleton pattern
+// // to make sure that only one Client object exists
+// var Client;
+
+// (function () {
+//   var instance;
+//   Client = function Client() {
+//     if (instance) {
+//       return instance;
+//     }
+
+//     // Set the instance variable and return it onwards
+//     instance = this;
+
+//     // Connect websocket to Server
+//     this.connect();
+//     console.log("Client started");
+//   };
+// }());
+
+// Client.prototype.connect = function() {
+//   var connString = config.protocol + config.domain + ':' + config.clientport;
+
+//   console.log("Websocket connection string:", connString, config.wsclientopts);
+
+//   var self = this;
+
+//   this.socket = io.connect(connString, config.wsclientopts);
+
+//   // Handle error event
+//   this.socket.on('error', function (err) {  
+//     console.log("Websocket 'error' event:", err);
+//   });
+
+//   // Handle connection event
+//   this.socket.on('connect', function () { 
+//     console.log("Websocket 'connected' event with params:", self.socket);
+//     document.getElementById('top').innerHTML = "Connected.";
+//   });
+
 function preload(){
 	imgs["black"]["pawn"] = loadImage("game_assets/bpawn.png");
 	imgs["black"]["promoted pawn"] = loadImage("game_assets/bpawn_prom.png");
@@ -49,12 +89,10 @@ function setup() {
 		game.resetGame();
 	});
 
-
 	let sideButton = createButton("I sexually identify as a color");
 	sideButton.mousePressed(() => flipBoard());
 	
-	// http
-	var socket = io.connect('http://shogi2-shogiii.1d35.starter-us-east-1.openshiftapps.com:8000/', {'forceNew':true });
+	var socket = io.connect('http://shogi2-shogiii.1d35.starter-us-east-1.openshiftapps.com:8000');
 	
 	console.log("WORK DAMNIT");
   	// We make a named event called 'mouse' and write an
