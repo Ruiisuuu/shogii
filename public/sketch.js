@@ -52,7 +52,7 @@ function setup() {
 	let sideButton = createButton("I sexually identify as a color");
 	sideButton.mousePressed(() => flipBoard());
 	
-	var socket = io.connect('http://shogi3-shogiii.1d35.starter-us-east-1.openshiftapps.com:8000');
+	var socket = io();
 	
 	console.log("WORK DAMNIT");
   	// We make a named event called 'mouse' and write an
