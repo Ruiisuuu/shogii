@@ -4,8 +4,6 @@ var server = require('http').Server(app);
 
 var io = require('socket.io').listen(server);
 
-server.listen(process.env.OPENSHIFT_NODEJS_PORT, process.env.OPENSHIFT_NODEJS_IP);
-
 io.sockets.on('connection', function (socket) {
           console.log("We have a new client: " + socket.id);
         
@@ -29,3 +27,13 @@ io.sockets.on('connection', function (socket) {
               console.log("Client has disconnected");
           });
 });
+
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8000;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+
+server.listen(server_port, server_ip_address, 
+              function () { var host = server.address().address;
+                            var port = server.address().port;
+                            console.log( 'Listening at http://%s:%s', host, port );
+                           });
+
