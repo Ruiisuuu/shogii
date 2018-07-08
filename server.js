@@ -1,8 +1,14 @@
 var express = require('express');
 var app = express();
-
-
 var server = require('http').Server(app);
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8000;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+
+server.listen(server_port, server_ip_address, 
+              function () { var host = server.address().address;
+                            var port = server.address().port;
+                            console.log( 'Listening at http://%s:%s', host, port );
+                           });
 
 app.use(express.static('public'));
 
@@ -32,12 +38,4 @@ io.sockets.on('connection', function (socket) {
           });
 });
 
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8000;
-var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-
-server.listen(server_port, server_ip_address, 
-              function () { var host = server.address().address;
-                            var port = server.address().port;
-                            console.log( 'Listening at http://%s:%s', host, port );
-                           });
 
