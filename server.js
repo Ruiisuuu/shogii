@@ -1,70 +1,59 @@
-// Check the configuration file for more details
-var config = require('./config');
+self.port = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080
 
-// Express.js stuff
-var express = require('express');
-var app = require('express')();
-var server = require('http').Server(app);
+// socket.io initialization on the server side
+self.initializeSocketIO = function() {
+        self.server = require('http').createServer(self.app);
+        self.io = require('socket.io').listen(self.server);
+        self.io.enable('browser client minification');  // send minified client
+        self.io.enable('browser client etag');          // apply etag caching logic based on version number
+        self.io.enable('browser client gzip');          // gzip the file
+        self.io.set('log level', 1);                    // reduce logging
 
-// Websockets with socket.io
-var io = require('socket.io')(server);
+        self.io.set('transports', [
+                'websocket'
+            ]);
+        return this;
+    }
 
-console.log("Trying to start server with config:", config.serverip + ":" + config.serverport);
+self.addSocketIOEvents = function() {
+        self.io.sockets.on('connection', function (socket) {
+          
+          console.log("We have a new client: " + socket.id);
+          
+          socket.on('my other event', function (data) {
+            console.log(data);
+          });
+          socket.on('move', function(data) {
+              console.log("new move");
+              socket.broadcast.emit('move', data);
+          });
+          socket.on('reset', function() {
+              console.log("new move");
+              socket.broadcast.emit('reset');
+          });
+          socket.on('move', function(data) {
+              console.log("new reset");
+              socket.broadcast.emit('move', data);
+          });
+          socket.on('gameover', function(data) {
+              console.log("new game over dude");
+              socket.broadcast.emit('gameover', data);
+          });
+          socket.on('disconnect', function(data) {
+              console.log("Client has disconnected");
+          });
+        });
+}
 
-// Both port and ip are needed for the OpenShift, otherwise it tries 
-// to bind server on IP 0.0.0.0 (or something) and fails
-server.listen(config.serverport, config.serverip, function() {
-  console.log("Server running @ http://" + config.serverip + ":" + config.serverport);
-});
+/**
+ *  Initializes the sample application.
+ */
+self.initialize = function() {
+    self.setupVariables();
+    self.populateCache();
+    self.setupTerminationHandlers();
 
-// Allow some files to be server over HTTP
-app.use(express.static('public'));
-
-// Serve GET on http://domain/
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + "/public/index.html");
-});
-
-console.log('are we here yet');
-
-// Register a callback function to run when we have an individual connection
-// This is run for each individual user that connects
-io.sockets.on('connection',
-  // We are given a websocket object in our function
-  function (socket) {
-
-    console.log("We have a new client: " + socket.id);
-
-    // When this user emits, client side: socket.emit('otherevent',some data);
-    socket.on('move',
-      function(data) {
-        // Data comes in as whatever was sent, including objects
-        console.log("new move");
-        // Send it  to all other clients
-        socket.broadcast.emit('move', data);
-      }
-    );
-
-    socket.on('reset',
-      function() {
-        // Data comes in as whatever was sent, including objects
-        console.log("new resettt");
-        // Send it  to all other clients
-        socket.broadcast.emit('reset');
-      }
-    );
-
-    socket.on('gameover',
-      function(data) {
-        // Data comes in as whatever was sent, including objects
-        console.log("new game over duddee");
-        // Send it  to all other clients
-        socket.broadcast.emit('gameover',data);
-      }
-    );
-
-    socket.on('disconnect', function() {
-      console.log("Client has disconnected");
-    });
-  }
-);
+    // Create the express server and routes.
+    self.initializeServer();
+    self.initializeSocketIO().addSocketIOEvents();
+};
