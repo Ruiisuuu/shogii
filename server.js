@@ -1,4 +1,4 @@
-self.port = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080
+//self.port = process.env.OPENSHIFT_INTERNAL_PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080
 
 // socket.io initialization on the server side
 self.initializeSocketIO = function() {
