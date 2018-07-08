@@ -1,18 +1,24 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
-server.listen(server_port, server_ip_address, 
-              function () { var host = server.address().address;
-                            var port = server.address().port;
-                            console.log( 'Listening at http://%s:%s', host, port );
-                           });
 
-app.use(express.static('public'));
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
+});
 
-var io = require('socket.io').listen(server);
+io.on('connection', function(socket){
+  console.log('a user connected');
+});
+
+http.listen(server_port, function(){
+  console.log('listening on *:8080');
+});
+
+//app.use(express.static('public'));
 
 io.sockets.on('connection', function (socket) {
           console.log("We have a new client: " + socket.id);
