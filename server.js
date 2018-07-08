@@ -22,7 +22,7 @@ app.use(express.static('public'));
 
 // Serve GET on http://domain/
 app.get('/', function (req, res) {
-  res.sendFile('public/index.html');
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 console.log('are we here yet');
